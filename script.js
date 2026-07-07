@@ -146,7 +146,7 @@ function initTrollGame() {
     clearTimeout(gameMoveTimeoutId);
 
     const stageRect = stage.getBoundingClientRect();
-    const size = trollBtn.offsetWidth || 64;
+    const size = trollBtn.offsetWidth || 88;
     const maxX = Math.max(stageRect.width - size, 0);
     const maxY = Math.max(stageRect.height - size, 0);
     const x = Math.random() * maxX;
@@ -163,7 +163,7 @@ function initTrollGame() {
     trollBtn.style.animation = "";
 
     // Trollet blir lite snabbare ju längre spelet pågår
-    const visibleTime = Math.max(1100 - gameScore * 40, 550);
+    const visibleTime = Math.max(1100 - gameScore * 40, 620);
     gameMoveTimeoutId = setTimeout(moveTroll, visibleTime);
   }
 
