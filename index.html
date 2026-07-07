@@ -27,6 +27,7 @@
     <nav id="mainNav" aria-label="Huvudmeny">
       <a href="#story">Om verkstan</a>
       <a href="#gallery">Smyckena</a>
+      <a href="#spel">Fånga trollet</a>
       <a href="#marknader">Marknader</a>
       <a href="https://www.instagram.com/trollut_grejar" target="_blank" rel="noopener" class="nav-ig">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg>
@@ -195,7 +196,50 @@
     </div>
   </section>
 
-  <!-- ============ CALENDAR ============ -->
+  <!-- ============ MINI-GAME: FÅNGA TROLLET ============ -->
+  <section class="section troll-game" id="spel">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Litet spel, sann rabatt</span>
+        <h2>Fånga trollet</h2>
+        <p>Trollen gillar att gömma sig i vår lera — och ibland i webbläsaren. Fånga <strong id="winThreshold">8</strong> stycken på 20 sekunder så låser du upp en riktig rabattkod.</p>
+      </div>
+
+      <div class="game-wrap">
+        <div class="game-hud">
+          <div class="hud-stat"><span class="hud-label">Poäng</span><span class="hud-value" id="gameScore">0</span></div>
+          <div class="hud-stat"><span class="hud-label">Tid kvar</span><span class="hud-value" id="gameTime">20</span></div>
+          <button class="btn btn-primary" id="gameStartBtn">Starta spelet</button>
+        </div>
+
+        <div class="game-stage" id="gameStage" aria-live="polite">
+          <p class="game-hint" id="gameHint">Tryck på "Starta spelet" — sen gäller det att vara snabb på klicket!</p>
+
+          <button type="button" class="troll-btn" id="trollBtn" aria-label="Fånga trollet" hidden>
+            <svg viewBox="0 0 100 100" width="100%" height="100%">
+              <ellipse cx="50" cy="62" rx="30" ry="26" fill="#C1432B"/>
+              <path d="M22 40 Q10 10 34 24 Q40 8 50 22 Q60 8 66 24 Q90 10 78 40" fill="#7A2A17"/>
+              <circle cx="36" cy="58" r="9" fill="#FBF6EA"/>
+              <circle cx="64" cy="58" r="9" fill="#FBF6EA"/>
+              <circle cx="37" cy="59" r="4" fill="#1A1712"/>
+              <circle cx="65" cy="59" r="4" fill="#1A1712"/>
+              <ellipse cx="50" cy="70" rx="7" ry="5" fill="#7A2A17"/>
+              <path d="M32 82 Q50 96 68 82" stroke="#7A2A17" stroke-width="5" fill="none" stroke-linecap="round"/>
+              <circle cx="24" cy="66" r="6" fill="#D6437E" opacity="0.85"/>
+              <circle cx="76" cy="66" r="6" fill="#D6437E" opacity="0.85"/>
+            </svg>
+          </button>
+
+          <div class="game-result" id="gameResult" hidden>
+            <div id="gameResultInner"></div>
+          </div>
+        </div>
+
+        <p class="game-note">Koden är samma för alla som klarar utmaningen — vi litar på hederssystemet (och kollar gärna en skärmdump om du är osäker 😉).</p>
+      </div>
+    </div>
+  </section>
+
   <section class="section calendar-section" id="marknader">
     <div class="garland" aria-hidden="true">
       <svg viewBox="0 0 1200 46" preserveAspectRatio="none">
@@ -263,6 +307,7 @@
       <div class="footer-links">
         <a href="#story">Om verkstan</a>
         <a href="#gallery">Smyckena</a>
+        <a href="#spel">Fånga trollet</a>
         <a href="#marknader">Marknader</a>
         <a href="https://www.instagram.com/trollut_grejar" target="_blank" rel="noopener">Instagram</a>
       </div>

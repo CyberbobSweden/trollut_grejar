@@ -82,6 +82,146 @@ function renderCalendar() {
   }).join("");
 }
 
+/* ==========================================================================
+   FÅNGA TROLLET — litet minispel
+   -----------------------------------------------------------------------
+   Rent klientbaserat spel: rabattkoden är samma för alla som når
+   GAME_WIN_SCORE, den är alltså inte unik eller spärrad automatiskt.
+   Vill ni koppla riktiga, engångskoder krävs ett litet backend-steg
+   (t.ex. generera koder i förväg och markera dem som förbrukade).
+   ========================================================================== */
+
+const GAME_DURATION = 20;      // sekunder
+const GAME_WIN_SCORE = 8;      // antal fångade troll för rabatt
+const GAME_DISCOUNT_CODE = "TROLL25";
+
+let gameScore = 0;
+let gameTimeLeft = GAME_DURATION;
+let gameMoveTimeoutId = null;
+let gameCountdownId = null;
+let gameActive = false;
+
+function initTrollGame() {
+  const startBtn = document.getElementById("gameStartBtn");
+  const stage = document.getElementById("gameStage");
+  const trollBtn = document.getElementById("trollBtn");
+  const hint = document.getElementById("gameHint");
+  const resultPanel = document.getElementById("gameResult");
+  const scoreEl = document.getElementById("gameScore");
+  const timeEl = document.getElementById("gameTime");
+  const thresholdEl = document.getElementById("winThreshold");
+  if (!startBtn || !stage || !trollBtn) return;
+
+  if (thresholdEl) thresholdEl.textContent = GAME_WIN_SCORE;
+
+  startBtn.addEventListener("click", startTrollGame);
+  trollBtn.addEventListener("click", catchTroll);
+
+  function startTrollGame() {
+    clearTimeout(gameMoveTimeoutId);
+    clearInterval(gameCountdownId);
+
+    gameScore = 0;
+    gameTimeLeft = GAME_DURATION;
+    gameActive = true;
+
+    scoreEl.textContent = gameScore;
+    timeEl.textContent = gameTimeLeft;
+    hint.hidden = true;
+    resultPanel.hidden = true;
+    startBtn.textContent = "Spelar...";
+    startBtn.disabled = true;
+
+    moveTroll();
+
+    gameCountdownId = setInterval(() => {
+      gameTimeLeft -= 1;
+      timeEl.textContent = Math.max(gameTimeLeft, 0);
+      if (gameTimeLeft <= 0) endTrollGame();
+    }, 1000);
+  }
+
+  function moveTroll() {
+    if (!gameActive) return;
+    clearTimeout(gameMoveTimeoutId);
+
+    const stageRect = stage.getBoundingClientRect();
+    const size = trollBtn.offsetWidth || 64;
+    const maxX = Math.max(stageRect.width - size, 0);
+    const maxY = Math.max(stageRect.height - size, 0);
+    const x = Math.random() * maxX;
+    const y = Math.random() * maxY;
+
+    trollBtn.style.left = `${x}px`;
+    trollBtn.style.top = `${y}px`;
+    trollBtn.hidden = false;
+    trollBtn.classList.remove("caught");
+    // Omstarta pop-animationen
+    trollBtn.style.animation = "none";
+    // eslint-disable-next-line no-unused-expressions
+    trollBtn.offsetHeight;
+    trollBtn.style.animation = "";
+
+    // Trollet blir lite snabbare ju längre spelet pågår
+    const visibleTime = Math.max(1100 - gameScore * 40, 550);
+    gameMoveTimeoutId = setTimeout(moveTroll, visibleTime);
+  }
+
+  function catchTroll() {
+    if (!gameActive) return;
+    gameScore += 1;
+    scoreEl.textContent = gameScore;
+    trollBtn.classList.add("caught");
+    clearTimeout(gameMoveTimeoutId);
+    gameMoveTimeoutId = setTimeout(moveTroll, 160);
+  }
+
+  function endTrollGame() {
+    gameActive = false;
+    clearTimeout(gameMoveTimeoutId);
+    clearInterval(gameCountdownId);
+    trollBtn.hidden = true;
+
+    startBtn.textContent = "Spela igen";
+    startBtn.disabled = false;
+
+    const resultInner = document.getElementById("gameResultInner");
+    const won = gameScore >= GAME_WIN_SCORE;
+
+    resultInner.innerHTML = won ? `
+      <div class="result-card">
+        <span class="result-score">${gameScore} troll fångade!</span>
+        <h3>Snyggt trollat 🎉</h3>
+        <p>Du har låst upp 25% rabatt på ditt nästa köp. Visa koden i DM på Instagram så löser vi det.</p>
+        <div class="discount-code">
+          <span id="discountCodeText">${GAME_DISCOUNT_CODE}</span>
+          <button type="button" id="copyCodeBtn">Kopiera</button>
+        </div>
+        <p style="font-size:0.85rem;opacity:0.8;">Gäller ett köp per person, kan inte kombineras med andra erbjudanden.</p>
+      </div>
+    ` : `
+      <div class="result-card">
+        <span class="result-score">${gameScore} troll fångade</span>
+        <h3>Nästan där!</h3>
+        <p>Fånga minst ${GAME_WIN_SCORE} troll på ${GAME_DURATION} sekunder för att låsa upp 25% rabatt. Testa igen!</p>
+      </div>
+    `;
+    resultPanel.hidden = false;
+
+    if (won) {
+      const copyBtn = document.getElementById("copyCodeBtn");
+      copyBtn.addEventListener("click", () => {
+        const text = GAME_DISCOUNT_CODE;
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(text).then(() => {
+            copyBtn.textContent = "Kopierad!";
+            setTimeout(() => (copyBtn.textContent = "Kopiera"), 1600);
+          });
+        }
+      });
+    }
+  }
+}
 function initMobileNav() {
   const toggle = document.getElementById("navToggle");
   const nav = document.getElementById("mainNav");
@@ -118,6 +258,7 @@ function initMobileNav() {
 document.addEventListener("DOMContentLoaded", () => {
   renderCalendar();
   initMobileNav();
+  initTrollGame();
   const yearEl = document.getElementById("year");
   if (yearEl) yearEl.textContent = new Date().getFullYear();
 });
