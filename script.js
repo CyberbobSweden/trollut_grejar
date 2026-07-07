@@ -82,8 +82,42 @@ function renderCalendar() {
   }).join("");
 }
 
+function initMobileNav() {
+  const toggle = document.getElementById("navToggle");
+  const nav = document.getElementById("mainNav");
+  if (!toggle || !nav) return;
+
+  const closeNav = () => {
+    nav.classList.remove("is-open");
+    toggle.setAttribute("aria-expanded", "false");
+  };
+
+  toggle.addEventListener("click", () => {
+    const isOpen = nav.classList.toggle("is-open");
+    toggle.setAttribute("aria-expanded", String(isOpen));
+  });
+
+  // Stäng menyn när en länk klickas
+  nav.querySelectorAll("a").forEach(link => {
+    link.addEventListener("click", closeNav);
+  });
+
+  // Stäng menyn om man klickar utanför den
+  document.addEventListener("click", (e) => {
+    if (!nav.contains(e.target) && !toggle.contains(e.target)) {
+      closeNav();
+    }
+  });
+
+  // Stäng menyn om fönstret breddas ut över mobilläget
+  window.addEventListener("resize", () => {
+    if (window.innerWidth > 680) closeNav();
+  });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   renderCalendar();
+  initMobileNav();
   const yearEl = document.getElementById("year");
   if (yearEl) yearEl.textContent = new Date().getFullYear();
 });

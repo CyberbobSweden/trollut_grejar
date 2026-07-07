@@ -22,8 +22,8 @@
 :root {
   --birch: #F6EFDD;
   --birch-2: #EFE4C8;
-  --pine: #1E3324;
-  --pine-2: #142219;
+  --pine: #3A2030;
+  --pine-2: #23121C;
   --rust: #C1432B;
   --rust-dark: #9E3320;
   --amber: #D9A441;
@@ -147,12 +147,13 @@ button:focus-visible {
   backdrop-filter: blur(6px);
   border-bottom: 1px solid var(--line);
 }
-.site-header .container {
+.site-header .header-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding-top: 14px;
   padding-bottom: 14px;
+  position: relative;
 }
 .logo {
   display: flex;
@@ -204,7 +205,20 @@ button:focus-visible {
   border-radius: 999px;
 }
 .nav-ig:hover::after { display: none; }
-.nav-toggle { display: none; }
+.nav-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: var(--cream-ink);
+  color: var(--charcoal);
+  cursor: pointer;
+  padding: 0;
+}
+.nav-toggle:hover { background: var(--blush); }
 
 /* ---------- ljusslinga (signature motif) ---------- */
 .garland {
@@ -235,7 +249,7 @@ button:focus-visible {
 .hero {
   background:
     radial-gradient(60% 70% at 90% 100%, rgba(214, 67, 126, 0.28) 0%, rgba(214, 67, 126, 0) 60%),
-    radial-gradient(120% 140% at 15% -10%, #2c4a35 0%, var(--pine) 45%, var(--pine-2) 100%);
+    radial-gradient(120% 140% at 15% -10%, #5C2F45 0%, var(--pine) 45%, var(--pine-2) 100%);
   color: var(--cream-ink);
   position: relative;
   overflow: hidden;
@@ -391,7 +405,7 @@ button:focus-visible {
 .calendar-section {
   background:
     radial-gradient(55% 65% at 8% 0%, rgba(214, 67, 126, 0.24) 0%, rgba(214, 67, 126, 0) 60%),
-    radial-gradient(120% 140% at 85% 110%, #26402d 0%, var(--pine) 45%, var(--pine-2) 100%);
+    radial-gradient(120% 140% at 85% 110%, #542A40 0%, var(--pine) 45%, var(--pine-2) 100%);
   color: var(--cream-ink);
 }
 .calendar-section .section-head h2 { color: var(--cream-ink); }
@@ -524,20 +538,64 @@ footer.site-footer {
 
 /* ---------- responsive ---------- */
 @media (max-width: 980px) {
-  .hero-inner { grid-template-columns: 1fr; padding-top: 44px; }
+  .container { padding: 0 24px; }
+  .hero-inner { grid-template-columns: 1fr; padding-top: 36px; padding-bottom: 64px; }
   .hero-art { order: -1; }
-  .story { grid-template-columns: 1fr; }
+  .story { grid-template-columns: 1fr; gap: 34px; }
   .cal-layout { grid-template-columns: 1fr; }
   .gallery-grid { grid-template-columns: repeat(2, 1fr); }
   .ig-inner { grid-template-columns: 1fr; text-align: center; justify-items: center; padding: 44px 0; }
+  .section { padding: 64px 0; }
 }
 @media (max-width: 680px) {
-  .site-header nav { display: none; }
+  .container { padding: 0 20px; }
+
+  .nav-toggle { display: inline-flex; }
+
+  .site-header nav {
+    position: absolute;
+    top: calc(100% + 1px);
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 2px;
+    background: var(--birch);
+    border-bottom: 1px solid var(--line);
+    box-shadow: 0 16px 24px rgba(26,23,18,0.12);
+    padding: 8px 24px 18px;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    pointer-events: none;
+    transition: max-height 0.28s ease, opacity 0.2s ease;
+  }
+  .site-header nav.is-open {
+    max-height: 320px;
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .site-header nav a {
+    padding: 12px 4px;
+    border-bottom: 1px solid var(--line);
+  }
+  .site-header nav a::after { display: none; }
+  .site-header nav .nav-ig {
+    justify-content: center;
+    margin-top: 8px;
+    border-bottom: none;
+  }
+
   .cal-item { grid-template-columns: 60px 1fr; }
   .cal-status { grid-column: 1 / -1; justify-self: start; }
   .gallery-grid { grid-template-columns: 1fr 1fr; gap: 14px; }
   .hero-art .hero-tag { display: none; }
+  .hero h1 { font-size: clamp(1.9rem, 8vw, 2.6rem); }
+  .hero-badges { gap: 16px 26px; }
+  .story-text h2, .section-head h2 { font-size: clamp(1.55rem, 7vw, 2rem); }
 }
 @media (max-width: 460px) {
+  .container { padding: 0 18px; }
   .gallery-grid { grid-template-columns: 1fr; }
+  .hero-art { grid-template-columns: 1fr 1fr; }
 }
